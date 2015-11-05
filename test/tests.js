@@ -20,5 +20,9 @@ describe('Server', function() {
         done();
       });
     });
+
+    it('should forward a post request');
+
+    it('should forward a delete request');
   });
 });

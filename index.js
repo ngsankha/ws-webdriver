@@ -47,11 +47,15 @@ io.on('connection', function(socket){
   });
 
   socket.on('post', function(msg) {
-
+    httpRequest('post', msg.path, msg.body, function(data) {
+      socket.emit('response', data);
+    });
   });
 
   socket.on('delete', function(msg) {
-
+    httpRequest('delete', msg.path, undefined, function(data) {
+      socket.emit('response', data);
+    });
   });
 
   socket.on('disconnect', function() {
