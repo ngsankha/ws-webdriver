@@ -7,7 +7,7 @@ var server = http.createServer(function(req, res) {
 var io = require('socket.io')(server);
 
 var httpRequest = function(method, path, body, callback) {
-  console.log(method.toUpperCase() + ':', path);
+  console.log(method + ':', path);
   var options = {
     host: 'localhost',
     port: 4444,
@@ -32,7 +32,7 @@ var httpRequest = function(method, path, body, callback) {
   });
 
   if (typeof body !== 'undefined') {
-    req.write(body);
+    req.write(JSON.stringify(body));
   }
   req.end();
 }
@@ -40,26 +40,30 @@ var httpRequest = function(method, path, body, callback) {
 io.on('connection', function(socket){
   console.log('Accepted incoming connection.');
 
-  socket.on('get', function(msg) {
-    httpRequest('get', msg.path, undefined, function(data) {
+  socket.on('GET', function(msg) {
+    httpRequest('GET', msg.path, undefined, function(data) {
       socket.emit('response', data);
     });
   });
 
-  socket.on('post', function(msg) {
-    httpRequest('post', msg.path, msg.body, function(data) {
+  socket.on('POST', function(msg) {
+    httpRequest('POST', msg.path, msg.body, function(data) {
       socket.emit('response', data);
     });
   });
 
-  socket.on('delete', function(msg) {
-    httpRequest('delete', msg.path, undefined, function(data) {
+  socket.on('DELETE', function(msg) {
+    httpRequest('DELETE', msg.path, undefined, function(data) {
       socket.emit('response', data);
     });
   });
 
   socket.on('disconnect', function() {
     console.log('Client disconnected.')
+  });
+
+  socket.on('error', function(err) {
+    console.log(err);
   });
 });
 
