@@ -1,7 +1,9 @@
-var http = require('http');
+var http = require('http'),
+    packageJson = require('./package.json'),
+    config = require('./config.json');
 
 var server = http.createServer(function(req, res) {
-  res.end(JSON.stringify({ name: 'ws-socket', version: '0.0.1' }));
+  res.end(JSON.stringify({ name: packageJson.name, version: packageJson.version }));
 });
 
 var io = require('socket.io')(server);
@@ -9,8 +11,8 @@ var io = require('socket.io')(server);
 var httpRequest = function(method, path, body, callback) {
   console.log(method + ':', path);
   var options = {
-    host: 'localhost',
-    port: 4444,
+    host: config.seleniumHost,
+    port: config.seleniumPort,
     method: method,
     path: path
   }
@@ -67,6 +69,6 @@ io.on('connection', function(socket){
   });
 });
 
-server.listen(4000, function() {
-  console.log("Listening on port 4000.");
+server.listen(config.port, function() {
+  console.log("Listening on port %d.", config.port);
 });

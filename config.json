@@ -1,0 +1,5 @@
+{
+  "seleniumHost": "localhost",
+  "seleniumPort": 4444,
+  "port": 4000
+}

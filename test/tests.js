@@ -12,8 +12,8 @@ describe('Server', function() {
       });
     });
 
-    it('should forward a get request', function(done) {
-      socket.emit('get', { path: '/wd/hub/status' });
+    it('should forward a GET request', function(done) {
+      socket.emit('GET', { path: '/wd/hub/status' });
       socket.on('response', function(data) {
         var obj = JSON.parse(data);
         assert.equal(obj.status, 0);
