@@ -8,10 +8,19 @@ describe('Server', function() {
 
     before(function(done) {
       server = http.createServer(function(req, res) {
-        res.end(JSON.stringify({
-          method: req.method,
-          path: req.url
-        }));
+        var data = '';
+
+        req.on('data', function(chunk) {
+          data += chunk;
+        });
+
+        req.on('end', function() {
+          res.end(JSON.stringify({
+            method: req.method,
+            path: req.url,
+            body: data
+          }));
+        });
       });
       server.listen(4444, function() {
         socket = io.connect('http://localhost:4000');
@@ -38,6 +47,18 @@ describe('Server', function() {
         var obj = JSON.parse(data);
         assert.equal(obj.method, 'POST');
         assert.equal(obj.path, '/wd/hub/status');
+        socket.removeListener('response');
+        done();
+      });
+    });
+
+    it('should forward a POST request with body', function(done) {
+      socket.emit('POST', { path: '/wd/hub/status', body: 'LOLOL' });
+      socket.on('response', function(data) {
+        var obj = JSON.parse(data);
+        assert.equal(obj.method, 'POST');
+        assert.equal(obj.path, '/wd/hub/status');
+        assert.equal(obj.body, 'LOLOL');
         socket.removeListener('response');
         done();
       });

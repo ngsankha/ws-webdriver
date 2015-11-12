@@ -34,7 +34,10 @@ var httpRequest = function(method, path, body, callback) {
   });
 
   if (typeof body !== 'undefined') {
-    req.write(JSON.stringify(body));
+    if (typeof body === 'string')
+      req.write(body);
+    else
+      req.write(JSON.stringify(body));
   }
   req.end();
 }
