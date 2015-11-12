@@ -1,14 +1,23 @@
 var io = require('socket.io-client'),
-    assert = require('assert');
+    assert = require('assert'),
+    http = require('http');
 
 describe('Server', function() {
   describe('HTTP Requests', function() {
-    var socket;
+    var socket, server;
 
     before(function(done) {
-      socket = io.connect('http://localhost:4000');
-      socket.on('connect', function() {
-        done();
+      server = http.createServer(function(req, res) {
+        res.end(JSON.stringify({
+          method: req.method,
+          path: req.url
+        }));
+      });
+      server.listen(4444, function() {
+        socket = io.connect('http://localhost:4000');
+        socket.on('connect', function() {
+          done();
+        });
       });
     });
 
@@ -16,13 +25,33 @@ describe('Server', function() {
       socket.emit('GET', { path: '/wd/hub/status' });
       socket.on('response', function(data) {
         var obj = JSON.parse(data);
-        assert.equal(obj.status, 0);
+        assert.equal(obj.method, 'GET');
+        assert.equal(obj.path, '/wd/hub/status');
+        socket.removeListener('response');
         done();
       });
     });
 
-    it('should forward a post request');
+    it('should forward a POST request', function(done) {
+      socket.emit('POST', { path: '/wd/hub/status' });
+      socket.on('response', function(data) {
+        var obj = JSON.parse(data);
+        assert.equal(obj.method, 'POST');
+        assert.equal(obj.path, '/wd/hub/status');
+        socket.removeListener('response');
+        done();
+      });
+    });
 
-    it('should forward a delete request');
+    it('should forward a DELETE request', function(done) {
+      socket.emit('DELETE', { path: '/wd/hub/status' });
+      socket.on('response', function(data) {
+        var obj = JSON.parse(data);
+        assert.equal(obj.method, 'DELETE');
+        assert.equal(obj.path, '/wd/hub/status');
+        socket.removeListener('response');
+        done();
+      });
+    });
   });
 });
