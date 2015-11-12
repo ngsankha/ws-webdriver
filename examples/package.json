@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "webdriverio": "git://github.com/sankha93/webdriverio.git"
+  }
+}
