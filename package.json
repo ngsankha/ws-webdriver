@@ -1,7 +1,7 @@
 {
-  "name": "ws-selenium",
+  "name": "ws-webdriver",
   "version": "0.0.1",
-  "description": "thin proxy for selenium over websockets",
+  "description": "thin proxy for webdriver over websockets",
   "dependencies": {
     "socket.io": "^1.3.7"
   },

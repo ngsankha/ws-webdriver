@@ -11,8 +11,8 @@ var io = require('socket.io')(server);
 var httpRequest = function(method, path, body, callback) {
   console.log(method + ':', path);
   var options = {
-    host: config.seleniumHost,
-    port: config.seleniumPort,
+    host: config.webdriverHost,
+    port: config.webdriverPort,
     method: method,
     path: path
   }
